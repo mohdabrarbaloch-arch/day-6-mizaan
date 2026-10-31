@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mizaan — enterprise AI control plane</title>
+<meta name="description" content="Model registry, multi-region deployments, pipeline gates and drift detection that proves whether two deployments actually behave the same.">
+<meta name="theme-color" content="#0c0e13">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- ------------------------------------------------------------------ auth -->
+<div id="auth-view">
+  <div class="auth-card">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#170f00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v18"/><path d="M4 8h16"/><path d="m6 8-3 6h6z"/><path d="m18 8-3 6h6z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-name">Mizaan</div>
+        <div class="brand-tag">control plane</div>
+      </div>
+    </div>
+
+    <p class="auth-sub">
+      Model registry, multi-region deployments and drift detection. The whole point:
+      prove that two regions are running the same thing, instead of assuming it.
+    </p>
+
+    <div id="auth-error"></div>
+
+    <form id="auth-form" autocomplete="on">
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required autocomplete="username" placeholder="you@company.com">
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="At least 10 characters">
+        <div class="hint" id="pw-hint">New accounts: 10+ characters, 4+ distinct.</div>
+      </div>
+      <div class="field" id="name-field" style="display:none">
+        <label for="display_name">Display name</label>
+        <input type="text" id="display_name" name="display_name" placeholder="Ayesha K." maxlength="120">
+      </div>
+      <button type="submit" class="btn-primary btn-block" id="auth-submit">Sign in</button>
+    </form>
+
+    <div style="margin-top:16px;text-align:center;font-size:12.5px;color:var(--text-faint)">
+      <span id="auth-toggle-text">No account yet?</span>
+      <button type="button" class="link-btn" id="auth-toggle">Create one</button>
+    </div>
+  </div>
+</div>
+
+<!-- ------------------------------------------------------------------- app -->
+<div id="app-view">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#170f00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v18"/><path d="M4 8h16"/><path d="m6 8-3 6h6z"/><path d="m18 8-3 6h6z"/>
+        </svg>
+      </div>
+      <div class="brand-name">Mizaan</div>
+    </div>
+
+    <nav class="nav" id="nav">
+      <button data-view="overview" class="active">Overview</button>
+      <button data-view="registry">Registry</button>
+      <button data-view="deployments">Deployments</button>
+      <button data-view="pipelines">Pipelines</button>
+      <button data-view="capacity">Capacity</button>
+    </nav>
+
+    <div class="topbar-right">
+      <div class="user-chip">
+        <div class="avatar" id="avatar">?</div>
+        <span class="uname" id="user-name"></span>
+        <span class="role-badge" id="user-role"></span>
+      </div>
+      <button class="btn-ghost btn-sm" id="logout">Sign out</button>
+    </div>
+  </header>
+
+  <main id="main"></main>
+</div>
+
+<!-- --------------------------------------------------------------- drawer -->
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <h3 id="drawer-title">Panel</h3>
+    <button class="close-x" id="drawer-close" aria-label="Close">&times;</button>
+  </div>
+  <div class="drawer-body" id="drawer-body"></div>
+  <div class="drawer-foot" id="drawer-foot"></div>
+</aside>
+
+<div id="toasts"></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
