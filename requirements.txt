@@ -2,10 +2,16 @@ fastapi==0.115.12
 uvicorn[standard]==0.34.0
 SQLAlchemy==2.1.6
 pydantic==2.14.2
-pydantic-settings==2.7.1
+# pydantic-settings 2.7.1 was assumed, not tested. 2.16.2 is what actually ran.
+pydantic-settings==2.16.2
 PyJWT==2.15.1
 bcrypt==5.0.0
-python-multipart==0.0.20
+# 0.0.33 is the tested version; 0.0.20 was a guess.
+python-multipart==0.0.33
+
+# EmailStr validates through this package. It is NOT optional: without it,
+# `import app.main` raises ImportError and the app cannot start at all.
+email-validator==2.3.0
 
 # PostgreSQL driver. Without this, docker-compose's DATABASE_URL
 # (postgresql+psycopg://...) fails at create_engine with ModuleNotFoundError.
