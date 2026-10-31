@@ -262,7 +262,7 @@ class PromoteRequest(BaseModel):
     target_region: str | None = Field(default=None, max_length=64)
     environment: Environment = "production"
     replicas: int = Field(default=1, ge=1, le=64)
-    gpus_per_replica: int = Field(default=0, ge=0, le=16)
+    gpus_per_replica: int = Field(default=1, ge=0, le=16)
 
 
 # ---------------------------------------------------------------------- drift
