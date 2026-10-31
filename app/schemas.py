@@ -14,7 +14,10 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 Role = Literal["viewer", "engineer", "admin"]
 Environment = Literal["production", "staging", "canary", "shadow"]
-RunStatus = Literal["pending", "running", "succeeded", "failed"]
+# `promoted` is part of the run's own lifecycle, not a separate flag: promotion
+# is a state the run reaches and then stays in. It has to be in this literal, or
+# reading the run history back after a promotion fails validation forever.
+RunStatus = Literal["pending", "running", "succeeded", "failed", "promoted"]
 
 
 # --------------------------------------------------------------------------- auth
@@ -230,7 +233,9 @@ class PipelineOut(BaseModel):
 
 class RunCreate(BaseModel):
     observed: dict[str, float] = Field(default_factory=dict)
-    status: RunStatus = "succeeded"
+    # A run cannot be *created* already promoted. That transition happens only
+    # through the promote endpoint, which is where the gates are re-checked.
+    status: Literal["pending", "running", "succeeded", "failed"] = "succeeded"
 
     @field_validator("observed")
     @classmethod
@@ -257,7 +262,7 @@ class PromoteRequest(BaseModel):
     target_region: str | None = Field(default=None, max_length=64)
     environment: Environment = "production"
     replicas: int = Field(default=1, ge=1, le=64)
-    gpus_per_replica: int = Field(default=1, ge=0, le=16)
+    gpus_per_replica: int = Field(default=0, ge=0, le=16)
 
 
 # ---------------------------------------------------------------------- drift

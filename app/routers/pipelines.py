@@ -221,12 +221,14 @@ def promote_run(
     if run is None or run.pipeline_id != pipeline.id:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Run not found")
 
+    # Idempotency check must come first: a promoted run is no longer
+    # "succeeded", so can_promote would reject it with a misleading reason.
+    if run.status == _PROMOTABLE:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Run is already promoted")
+
     promotable, reason = pipeline_engine.can_promote(run.status, run.gate_result or {})
     if not promotable:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=reason)
-
-    if run.status == _PROMOTABLE:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Run is already promoted")
 
     run.status = _PROMOTABLE
     db.commit()
