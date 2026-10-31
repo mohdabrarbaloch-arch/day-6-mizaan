@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: mizaan
+      POSTGRES_PASSWORD: mizaan
+      POSTGRES_DB: mizaan
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mizaan -d mizaan"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    # Not published to the host on purpose: the app reaches it over the
+    # compose network, and an open 5432 with a default password is how dev
+    # databases end up on the internet.
+    expose:
+      - "5432"
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # The psycopg driver this URL names is pinned in requirements.txt.
+      DATABASE_URL: postgresql+psycopg://mizaan:mizaan@db:5432/mizaan
+      SECRET_KEY: ${SECRET_KEY:?set SECRET_KEY in .env - copy .env.example}
+      ACCESS_TOKEN_MINUTES: ${ACCESS_TOKEN_MINUTES:-1440}
+      PRODUCTION: ${PRODUCTION:-0}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:8000}
+      AUTH_RATE_LIMIT: ${AUTH_RATE_LIMIT:-10}
+      WRITE_RATE_LIMIT: ${WRITE_RATE_LIMIT:-60}
+      SEED_REGIONS: ${SEED_REGIONS:-us-east:64:12:2.48,eu-west:32:8:2.61,ap-south:24:4:2.19}
+    ports:
+      - "8000:8000"
+
+volumes:
+  pgdata:

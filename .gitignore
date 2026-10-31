@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+*.db
+*.db-journal
+# SQLite WAL sidecars: *.db alone does not cover these, and a committed
+# db-wal is a 200 KB blob of someone's test data.
+*.db-wal
+*.db-shm
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+screenshots/*.png.tmp
+*.log
